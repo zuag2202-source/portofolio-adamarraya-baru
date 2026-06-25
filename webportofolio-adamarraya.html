@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>Adam Arraya | Portofolio D3 Teknik Komputer</title>
+  <meta name="description" content="Portofolio professional Adam Arraya - Mahasiswa D3 Teknik Komputer Universitas Duta Bangsa Surakarta Angkatan 25. Spesialis Networking, Linux, Cloud & Web Dev.">
+  <meta name="keywords" content="Adam Arraya, Teknik Komputer, Universitas Duta Bangsa Surakarta, Portofolio, Networking, Mikrotik, Cisco, Linux, Web Developer">
+  <meta name="author" content="Adam Arraya">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Syne & Plus Jakarta Sans & Playfair Display -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- React and Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.3/babel.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js (Global Imports untuk GhostCursor) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            syne: ['Syne', 'sans-serif'],
+          },
+          colors: {
+            burgundy: {
+              50: '#fdf3f4',
+              100: '#fbe4e7',
+              200: '#f7ccd2',
+              300: '#f0a5b0',
+              400: '#e47486',
+              500: '#d14761',
+              600: '#b72f4b',
+              700: '#9a2139',
+              800: '#4a0e17', // Main deep burgundy
+              950: '#1c060a', // Deepest background
+            },
+            gold: {
+              50: '#fbf9f4',
+              100: '#f3ebd9',
+              200: '#e6d5b3',
+              300: '#d7bc88',
+              400: '#c8a261',
+              500: '#b98841',
+              600: '#9e7033',
+              700: '#805728',
+              800: '#644220',
+              900: '#dcae6c', // Accent gold
+              950: '#f3e9dc', // Accent cream
+            }
+          },
+          animation: {
+            'spin-slow': 'spin 12s linear infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-12px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1c060a;
+    }
+    .light ::-webkit-scrollbar-track {
+      background: #faf6f0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4a0e17;
+      border-radius: 4px;
+    }
+    .light ::-webkit-scrollbar-thumb {
+      background: #dcae6c;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #9a2139;
+    }
+
+    /* Ghost Cursor Styles */
+    .ghost-cursor {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .ghost-cursor > canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
+
+    /* Style enhancements modeled after image_49b4ac.jpg */
+    .editorial-border {
+      border: 1px solid rgba(220, 174, 108, 0.25);
+    }
+    .dark .editorial-border {
+      border: 1px solid rgba(220, 174, 108, 0.2);
+    }
+    .editorial-grid {
+      background-image: linear-gradient(rgba(220, 174, 108, 0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(220, 174, 108, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* --- PROFILE CARD STYLES --- */
+    :root {
+      --pointer-x: 50%;
+      --pointer-y: 50%;
+      --pointer-from-center: 0;
+      --pointer-from-top: 0.5;
+      --pointer-from-left: 0.5;
+      --card-opacity: 0;
+      --rotate-x: 0deg;
+      --rotate-y: 0deg;
+      --background-x: 50%;
+      --background-y: 50%;
+      --grain: none;
+      --icon: none;
+      --behind-gradient: none;
+      --behind-glow-color: rgba(220, 174, 108, 0.25);
+      --behind-glow-size: 45%;
+      --inner-gradient: none;
+      --sunpillar-1: hsla(38, 80%, 65%, 0.25);
+      --sunpillar-2: hsla(43, 75%, 60%, 0.2);
+      --sunpillar-3: hsla(35, 80%, 70%, 0.15);
+      --sunpillar-4: hsla(15, 60%, 50%, 0.2);
+      --sunpillar-5: hsla(350, 55%, 45%, 0.15);
+      --sunpillar-6: hsla(25, 70%, 55%, 0.25);
+      --sunpillar-clr-1: var(--sunpillar-1);
+      --sunpillar-clr-2: var(--sunpillar-2);
+      --sunpillar-clr-3: var(--sunpillar-3);
+      --sunpillar-clr-4: var(--sunpillar-4);
+      --sunpillar-clr-5: var(--sunpillar-5);
+      --sunpillar-clr-6: var(--sunpillar-6);
+      --card-radius: 30px;
+    }
+
+    .pc-card-wrapper {
+      perspective: 800px;
+      transform: translate3d(0, 0, 0.1px);
+      position: relative;
+      touch-action: none;
+      z-index: 10;
+    }
+
+    .pc-behind {
+      position: absolute;
+      inset: -20px;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        circle at var(--pointer-x) var(--pointer-y),
+        var(--behind-glow-color) 0%,
+        transparent var(--behind-glow-size)
+      );
+      filter: blur(40px) saturate(1.1);
+      opacity: calc(0.7 * var(--card-opacity));
+      transition: opacity 250ms ease;
+    }
+
+    .pc-card-wrapper:hover,
+    .pc-card-wrapper.active {
+      --card-opacity: 1;
+    }
+
+    .pc-card {
+      height: 80svh;
+      max-height: 520px;
+      width: 100%;
+      max-width: 370px;
+      display: grid;
+      aspect-ratio: 0.718;
+      border-radius: var(--card-radius);
+      position: relative;
+      background-blend-mode: color-dodge, normal, normal, normal;
+      box-shadow: rgba(0, 0, 0, 0.6) calc((var(--pointer-from-left) * 12px) - 4px)
+        calc((var(--pointer-from-top) * 24px) - 8px) 25px -8px;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateZ(0) rotateX(0deg) rotateY(0deg);
+      background: rgba(15, 3, 5, 0.95);
+      backface-visibility: hidden;
+      overflow: hidden;
+      border: 1.5px solid rgba(220, 174, 108, 0.15);
+    }
+
+    .pc-card:hover,
+    .pc-card.active {
+      transition: none;
+      transform: translateZ(0) rotateX(var(--rotate-y)) rotateY(var(--rotate-x));
+      border-color: rgba(220, 174, 108, 0.45);
+    }
+
+    .pc-card-shell.entering .pc-card {
+      transition: transform 180ms ease-out;
+    }
+
+    .pc-card-shell {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .pc-card * {
+      display: grid;
+      grid-area: 1/-1;
+      border-radius: var(--card-radius);
+      pointer-events: none;
+    }
+
+    .pc-inside {
+      inset: 0;
+      position: absolute;
+      background-image: var(--inner-gradient);
+      background-color: rgba(15, 3, 5, 0.95);
+      transform: none;
+    }
+
+    .pc-shine {
+      mask-image: var(--icon);
+      mask-mode: opacity;
+      mask-repeat: repeat;
+      mask-size: 150%;
+      mask-position: top calc(200% - (var(--background-y) * 5)) left calc(100% - var(--background-x));
+      transition: filter 0.8s ease;
+      filter: brightness(0.35) contrast(1.1) saturate(0.3) opacity(0.2);
+      animation: holo-bg 18s linear infinite;
+      animation-play-state: running;
+      mix-blend-mode: color-dodge;
+    }
+
+    .pc-shine,
+    .pc-shine::after {
+      --space: 5%;
+      --angle: -45deg;
+      transform: translate3d(0, 0, 1px);
+      overflow: hidden;
+      z-index: 3;
+      background: transparent;
+      background-size: cover;
+      background-position: center;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          var(--sunpillar-clr-1) calc(var(--space) * 1),
+          var(--sunpillar-clr-2) calc(var(--space) * 2),
+          var(--sunpillar-clr-3) calc(var(--space) * 3),
+          var(--sunpillar-clr-4) calc(var(--space) * 4),
+          var(--sunpillar-clr-5) calc(var(--space) * 5),
+          var(--sunpillar-clr-6) calc(var(--space) * 6),
+          var(--sunpillar-clr-1) calc(var(--space) * 7)
+        ),
+        repeating-linear-gradient(
+          var(--angle),
+          #1c060a 0%,
+          hsl(24, 20%, 45%) 3.8%,
+          hsl(38, 35%, 50%) 4.5%,
+          hsl(24, 20%, 45%) 5.2%,
+          #1c060a 10%,
+          #1c060a 12%
+        ),
+        radial-gradient(
+          farthest-corner circle at var(--pointer-x) var(--pointer-y),
+          hsla(0, 0%, 0%, 0.1) 12%,
+          hsla(0, 0%, 0%, 0.15) 20%,
+          hsla(0, 0%, 0%, 0.25) 120%
+        );
+      background-position:
+        0 var(--background-y),
+        var(--background-x) var(--background-y),
+        center;
+      background-blend-mode: color, hard-light;
+      background-size:
+        500% 500%,
+        300% 300%,
+        200% 200%;
+      background-repeat: repeat;
+    }
+
+    .pc-shine::before,
+    .pc-shine::after {
+      content: '';
+      background-position: center;
+      background-size: cover;
+      grid-area: 1/1;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .pc-card:hover .pc-shine,
+    .pc-card.active .pc-shine {
+      filter: brightness(0.45) contrast(1.15) saturate(0.35) opacity(0.3);
+      animation-play-state: paused;
+    }
+
+    .pc-card:hover .pc-shine::before,
+    .pc-card.active .pc-shine::before,
+    .pc-card:hover .pc-shine::after,
+    .pc-card.active .pc-shine::after {
+      opacity: 1;
+    }
+
+    .pc-shine::before {
+      background-image:
+        linear-gradient(
+          45deg,
+          var(--sunpillar-4),
+          var(--sunpillar-5),
+          var(--sunpillar-6),
+          var(--sunpillar-1),
+          var(--sunpillar-2),
+          var(--sunpillar-3)
+        ),
+        radial-gradient(circle at var(--pointer-x) var(--pointer-y), hsl(0, 0%, 60%) 0%, hsla(0, 0%, 25%, 0.15) 90%),
+        var(--grain);
+      background-size:
+        250% 250%,
+        100% 100%,
+        220px 220px;
+      background-position:
+        var(--pointer-x) var(--pointer-y),
+        center,
+        calc(var(--pointer-x) * 0.01) calc(var(--pointer-y) * 0.01);
+      background-blend-mode: color-dodge;
+      filter: brightness(calc(1.3 - var(--pointer-from-center))) contrast(calc(var(--pointer-from-center) + 1.2))
+        saturate(calc(0.4 + var(--pointer-from-center)));
+      mix-blend-mode: luminosity;
+    }
+
+    .pc-shine::after {
+      background-position:
+        0 var(--background-y),
+        calc(var(--background-x) * 0.4) calc(var(--background-y) * 0.5),
+        center;
+      background-size:
+        200% 300%,
+        700% 700%,
+        100% 100%;
+      mix-blend-mode: difference;
+      filter: brightness(0.6) contrast(1.2);
+    }
+
+    .pc-glare {
+      transform: translate3d(0, 0, 1.1px);
+      overflow: hidden;
+      background-image: radial-gradient(
+        farthest-corner circle at var(--pointer-x) var(--pointer-y),
+        hsla(35, 30%, 75%, 0.2) 12%,
+        hsla(345, 40%, 12%, 0.85) 90%
+      );
+      mix-blend-mode: overlay;
+      filter: brightness(0.8) contrast(1.1);
+      z-index: 4;
+      opacity: 0.5;
+    }
+
+    .pc-avatar-content {
+      mix-blend-mode: normal;
+      overflow: visible;
+      transform: translateZ(2);
+      backface-visibility: hidden;
+    }
+
+    .pc-avatar-content .avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      position: absolute;
+      left: 50%;
+      transform-origin: 50% 100%;
+      transform: translateX(calc(-50% + (var(--pointer-from-left) - 0.5) * 6px)) translateZ(0)
+        scaleY(calc(1 + (var(--pointer-from-top) - 0.5) * 0.02)) scaleX(calc(1 + (var(--pointer-from-left) - 0.5) * 0.01));
+      bottom: -1px;
+      backface-visibility: hidden;
+      will-change: transform;
+      transition: transform 120ms ease-out;
+      display: block !important;
+    }
+
+    .pc-avatar-content::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      backdrop-filter: none;
+      pointer-events: none;
+      background: linear-gradient(to top, rgba(15, 3, 5, 0.95) 0%, rgba(15, 3, 5, 0) 50%);
+    }
+
+    .pc-user-info {
+      position: absolute;
+      --ui-inset: 20px;
+      --ui-radius-bias: 6px;
+      bottom: var(--ui-inset);
+      left: var(--ui-inset);
+      right: var(--ui-inset);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(74, 14, 23, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(220, 174, 108, 0.25);
+      border-radius: calc(max(0px, var(--card-radius) - var(--ui-inset) + var(--ui-radius-bias)));
+      padding: 10px 12px;
+      pointer-events: auto;
+    }
+
+    .pc-user-details {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pc-mini-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid rgba(220, 174, 108, 0.3);
+      flex-shrink: 0;
+    }
+
+    .pc-mini-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .pc-user-text {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .pc-handle {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .pc-status {
+      font-size: 11px;
+      color: #dcae6c;
+      line-height: 1;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pc-contact-btn {
+      border: 1px solid rgba(220, 174, 108, 0.3);
+      background: rgba(220, 174, 108, 0.15);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #f3e9dc;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(5px);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pc-contact-btn:hover {
+      border-color: #dcae6c;
+      background: #dcae6c;
+      color: #1c060a;
+      transform: translateY(-1px);
+    }
+
+    .pc-content:not(.pc-avatar-content) {
+      max-height: 100%;
+      overflow: hidden;
+      text-align: center;
+      position: relative;
+      transform: translate3d(
+        calc(var(--pointer-from-left) * -6px + 3px),
+        calc(var(--pointer-from-top) * -6px + 3px),
+        0.1px
+      );
+      z-index: 5;
+    }
+
+    .pc-details {
+      width: 100%;
+      position: absolute;
+      top: 2.5em;
+      display: flex;
+      flex-direction: column;
+      z-index: 12;
+    }
+
+    .pc-details h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      margin: 0;
+      font-size: 2rem;
+      background-image: linear-gradient(to bottom, #fff, #dcae6c);
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      letter-spacing: -0.02em;
+    }
+
+    .pc-details p {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 10px;
+      margin: 4px auto 0;
+      width: max-content;
+      background-image: linear-gradient(to bottom, #dcae6c, #9a2139);
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    @media (max-width: 768px) {
+      .pc-card {
+        height: 70svh;
+        max-height: 460px;
+      }
+      .pc-details h3 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body class="bg-burgundy-950 text-gold-950 font-sans transition-colors duration-300 overflow-x-hidden selection:bg-gold-900 selection:text-burgundy-950">
+
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react,env">
+    const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+    // --- GHOST CURSOR COMPONENT (DYNAMIC IMPORT SUPPORTED) ---
+    const GhostCursor = ({
+      className,
+      style,
+      trailLength = 50,
+      inertia = 0.5,
+      grainIntensity = 0.05,
+      bloomStrength = 0.1,
+      bloomRadius = 1.0,
+      bloomThreshold = 0.025,
+      brightness = 1,
+      color = '#dcae6c', // Default Gold
+      mixBlendMode = 'screen',
+      edgeIntensity = 0,
+      maxDevicePixelRatio = 0.5,
+      targetPixels,
+      fadeDelayMs,
+      fadeDurationMs,
+      zIndex = 10
+    }) => {
+      const containerRef = useRef(null);
+      const activePropsRef = useRef({ color, brightness, edgeIntensity, grainIntensity });
+
+      // Sinkronisasi Prop dinamis ke loop WebGL tanpa re-render effect
+      useEffect(() => {
+        activePropsRef.current = { color, brightness, edgeIntensity, grainIntensity };
+      }, [color, brightness, edgeIntensity, grainIntensity]);
+
+      useEffect(() => {
+        const host = containerRef.current;
+        if (!host) return;
+
+        let active = true;
+        let running = false;
+        let rafId = null;
+        let resizeObs = null;
+        let pointerActive = false;
+        let lastMoveTime = Date.now();
+        let fadeOpacity = 1.0;
+        let hasValidSize = false;
+
+        // Variables that will hold WebGL objects
+        let scene, camera, renderer, composer, material, geom, bloomPass, filmPass;
+        let trailBuf = [];
+        let head = 0;
+        let currentMouse = { x: 0.5, y: 0.5 };
+        let velocity = { x: 0, y: 0 };
+
+        try {
+          if (!active) return;
+          if (!window.THREE) {
+            console.error("Three.js belum dimuat dengan benar.");
+            return;
+          }
+
+          const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+          const budget = targetPixels ?? (isTouch ? 0.9e6 : 1.3e6);
+          const fDelay = fadeDelayMs ?? (isTouch ? 500 : 1000);
+          const fDuration = fadeDurationMs ?? (isTouch ? 1000 : 1500);
+
+          // Shaders
+          const baseVertexShader = `
+            varying vec2 vUv;
+            void main() {
+              vUv = uv;
+              gl_Position = vec4(position, 1.0);
+            }
+          `;
+          const fragmentShader = `
+            uniform float iTime;
+            uniform vec3  iResolution;
+            uniform vec2  iMouse;
+            uniform vec2  iPrevMouse[MAX_TRAIL_LENGTH];
+            uniform float iOpacity;
+            uniform float iScale;
+            uniform vec3  iBaseColor;
+            uniform float iBrightness;
+            uniform float iEdgeIntensity;
+            varying vec2  vUv;
+
+            float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7))) * 43758.5453123); }
+            float noise(vec2 p){
+              vec2 i = floor(p), f = fract(p);
+              f *= f * (3. - 2. * f);
+              return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), f.x),
+                         mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), f.x), f.y);
+            }
+            float fbm(vec2 p){
+              float v = 0.0;
+              float a = 0.5;
+              mat2 m = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
+              for(int i=0;i<5;i++){
+                v += a * noise(p);
+                p = m * p * 2.0;
+                a *= 0.5;
+              }
+              return v;
+            }
+            vec3 tint1(vec3 base){ return mix(base, vec3(1.0), 0.15); }
+            vec3 tint2(vec3 base){ return mix(base, vec3(0.8, 0.9, 1.0), 0.25); }
+
+            vec4 blob(vec2 p, vec2 mousePos, float intensity, float activity) {
+              vec2 q = vec2(fbm(p * iScale + iTime * 0.1), fbm(p * iScale + vec2(5.2,1.3) + iTime * 0.1));
+              vec2 r = vec2(fbm(p * iScale + q * 1.5 + iTime * 0.15), fbm(p * iScale + q * 1.5 + vec2(8.3,2.8) + iTime * 0.15));
+
+              float smoke = fbm(p * iScale + r * 0.8);
+              float radius = 0.5 + 0.3 * (1.0 / iScale);
+              float distFactor = 1.0 - smoothstep(0.0, radius * activity, length(p - mousePos));
+              float alpha = pow(smoke, 2.5) * distFactor;
+
+              vec3 c1 = tint1(iBaseColor);
+              vec3 c2 = tint2(iBaseColor);
+              vec3 color = mix(c1, c2, sin(iTime * 0.5) * 0.5 + 0.5);
+
+              return vec4(color * alpha * intensity, alpha * intensity);
+            }
+
+            void main() {
+              vec2 uv = (gl_FragCoord.xy / iResolution.xy * 2.0 - 1.0) * vec2(iResolution.x / iResolution.y, 1.0);
+              vec2 mouse = (iMouse * 2.0 - 1.0) * vec2(iResolution.x / iResolution.y, 1.0);
+
+              vec3 colorAcc = vec3(0.0);
+              float alphaAcc = 0.0;
+
+              vec4 b = blob(uv, mouse, 1.0, iOpacity);
+              colorAcc += b.rgb;
+              alphaAcc += b.a;
+
+              for (int i = 0; i < MAX_TRAIL_LENGTH; i++) {
+                vec2 pm = (iPrevMouse[i] * 2.0 - 1.0) * vec2(iResolution.x / iResolution.y, 1.0);
+                float t = 1.0 - float(i) / float(MAX_TRAIL_LENGTH);
+                t = pow(t, 2.0);
+                if (t > 0.01) {
+                  vec4 bt = blob(uv, pm, t * 0.8, iOpacity);
+                  colorAcc += bt.rgb;
+                  alphaAcc += bt.a;
+                }
+              }
+
+              colorAcc *= iBrightness;
+
+              vec2 uv01 = gl_FragCoord.xy / iResolution.xy;
+              float edgeDist = min(min(uv01.x, 1.0 - uv01.x), min(uv01.y, 1.0 - uv01.y));
+              float distFromEdge = clamp(edgeDist * 2.0, 0.0, 1.0);
+              float k = clamp(iEdgeIntensity, 0.0, 1.0);
+              float edgeMask = mix(1.0 - k, 1.0, distFromEdge);
+
+              float outAlpha = clamp(alphaAcc * iOpacity * edgeMask, 0.0, 1.0);
+              gl_FragColor = vec4(colorAcc, outAlpha);
+            }
+          `;
+
+          const FilmGrainShader = {
+            uniforms: { tDiffuse: { value: null }, iTime: { value: 0 }, intensity: { value: grainIntensity } },
+            vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+            fragmentShader: `uniform sampler2D tDiffuse; uniform float iTime; uniform float intensity; varying vec2 vUv; float hash1(float n){ return fract(sin(n)*43758.5453); } void main(){ vec4 color = texture2D(tDiffuse, vUv); float n = hash1(vUv.x*1000.0 + vUv.y*2000.0 + iTime) * 2.0 - 1.0; color.rgb += n * intensity * color.rgb; gl_FragColor = color; }`
+          };
+
+          const UnpremultiplyPassShader = {
+            uniforms: { tDiffuse: { value: null } },
+            vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+            fragmentShader: `uniform sampler2D tDiffuse; varying vec2 vUv; void main(){ vec4 c = texture2D(tDiffuse, vUv); float a = max(c.a, 1e-5); vec3 straight = c.rgb / a; gl_FragColor = vec4(clamp(straight, 0.0, 1.0), c.a); }`
+          };
+
+          renderer = new THREE.WebGLRenderer({
+            antialias: !isTouch, alpha: true, depth: false, stencil: false,
+            powerPreference: isTouch ? 'low-power' : 'high-performance',
+            premultipliedAlpha: false, preserveDrawingBuffer: false
+          });
+          renderer.setClearColor(0x000000, 0);
+          renderer.domElement.style.pointerEvents = 'none';
+          if (mixBlendMode) renderer.domElement.style.mixBlendMode = mixBlendMode;
+          host.appendChild(renderer.domElement);
+
+          scene = new THREE.Scene();
+          camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+          geom = new THREE.PlaneGeometry(2, 2);
+
+          const maxTrail = Math.max(1, Math.floor(trailLength));
+          trailBuf = Array.from({ length: maxTrail }, () => new THREE.Vector2(0.5, 0.5));
+          velocity = new THREE.Vector2(0, 0);
+          currentMouse = new THREE.Vector2(0.5, 0.5);
+
+          material = new THREE.ShaderMaterial({
+            defines: { MAX_TRAIL_LENGTH: maxTrail },
+            uniforms: {
+              iTime: { value: 0 },
+              iResolution: { value: new THREE.Vector3(1, 1, 1) },
+              iMouse: { value: currentMouse.clone() },
+              iPrevMouse: { value: trailBuf.map(v => v.clone()) },
+              iOpacity: { value: 1.0 },
+              iScale: { value: 1.0 },
+              iBaseColor: { value: new THREE.Vector3(1,1,1) },
+              iBrightness: { value: brightness },
+              iEdgeIntensity: { value: edgeIntensity }
+            },
+            vertexShader: baseVertexShader,
+            fragmentShader,
+            transparent: true, depthTest: false, depthWrite: false
+          });
+
+          scene.add(new THREE.Mesh(geom, material));
+
+          composer = new THREE.EffectComposer(renderer);
+          composer.addPass(new THREE.RenderPass(scene, camera));
+          bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(1, 1), bloomStrength, bloomRadius, bloomThreshold);
+          composer.addPass(bloomPass);
+          filmPass = new THREE.ShaderPass(FilmGrainShader);
+          composer.addPass(filmPass);
+          composer.addPass(new THREE.ShaderPass(UnpremultiplyPassShader));
+
+          const calculateScale = (el) => {
+            const r = el.getBoundingClientRect();
+            const base = 600;
+            const current = Math.min(Math.max(1, r.width), Math.max(1, r.height));
+            return Math.max(0.5, Math.min(2.0, current / base));
+          };
+
+          const resize = () => {
+            if (!active) return;
+            const rect = host.getBoundingClientRect();
+            const cssW = Math.floor(rect.width);
+            const cssH = Math.floor(rect.height);
+            if (cssW <= 0 || cssH <= 0) {
+              hasValidSize = false;
+              return;
+            }
+            const currentDPR = Math.min(window.devicePixelRatio || 1, maxDevicePixelRatio);
+            const need = cssW * cssH * currentDPR * currentDPR;
+            const scale = need <= budget ? 1 : Math.max(0.5, Math.min(1, Math.sqrt(budget / Math.max(1, need))));
+            const pixelRatio = currentDPR * scale;
+
+            renderer.setPixelRatio(pixelRatio);
+            renderer.setSize(cssW, cssH, false);
+            composer.setPixelRatio?.(pixelRatio);
+            composer.setSize(cssW, cssH);
+
+            const wpx = Math.max(1, Math.floor(cssW * pixelRatio));
+            const hpx = Math.max(1, Math.floor(cssH * pixelRatio));
+            material.uniforms.iResolution.value.set(wpx, hpx, 1);
+            material.uniforms.iScale.value = calculateScale(host);
+            bloomPass.setSize(wpx, hpx);
+
+            hasValidSize = true;
+          };
+
+          resize();
+          resizeObs = new ResizeObserver(() => { if (active) resize(); });
+          resizeObs.observe(host);
+
+          const ensureLoop = () => {
+            if (!running) {
+              running = true;
+              rafId = requestAnimationFrame(animate);
+            }
+          };
+
+          // Global Mouse Trackers
+          const onPointerMove = e => {
+            const x = THREE.MathUtils.clamp(e.clientX / window.innerWidth, 0, 1);
+            const y = THREE.MathUtils.clamp(1 - (e.clientY / window.innerHeight), 0, 1);
+            currentMouse.set(x, y);
+            pointerActive = true;
+            lastMoveTime = performance.now();
+            ensureLoop();
+          };
+
+          window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+          const start = performance.now();
+          const animate = () => {
+            if (!active) return;
+            if (!hasValidSize) {
+              rafId = requestAnimationFrame(animate);
+              return;
+            }
+
+            const now = performance.now();
+            const t = (now - start) / 1000;
+
+            const p = activePropsRef.current;
+            material.uniforms.iBrightness.value = p.brightness;
+            material.uniforms.iEdgeIntensity.value = p.edgeIntensity;
+            const targetColor = new THREE.Color(p.color);
+            material.uniforms.iBaseColor.value.set(targetColor.r, targetColor.g, targetColor.b);
+            if (filmPass) filmPass.uniforms.intensity.value = p.grainIntensity;
+
+            if (pointerActive) {
+              velocity.set(currentMouse.x - material.uniforms.iMouse.value.x, currentMouse.y - material.uniforms.iMouse.value.y);
+              material.uniforms.iMouse.value.copy(currentMouse);
+              fadeOpacity = 1.0;
+            } else {
+              velocity.multiplyScalar(inertia);
+              if (velocity.lengthSq() > 1e-6) material.uniforms.iMouse.value.add(velocity);
+              const dt = now - lastMoveTime;
+              if (dt > fDelay) {
+                const k = Math.min(1, (dt - fDelay) / fDuration);
+                fadeOpacity = Math.max(0, 1 - k);
+              }
+            }
+
+            const N = trailBuf.length;
+            head = (head + 1) % N;
+            trailBuf[head].copy(material.uniforms.iMouse.value);
+            const arr = material.uniforms.iPrevMouse.value;
+            for (let i = 0; i < N; i++) {
+              const srcIdx = (head - i + N) % N;
+              arr[i].copy(trailBuf[srcIdx]);
+            }
+
+            material.uniforms.iOpacity.value = fadeOpacity;
+            material.uniforms.iTime.value = t;
+            if (filmPass) filmPass.uniforms.iTime.value = t;
+
+            composer.render();
+
+            if (!pointerActive && fadeOpacity <= 0.001) {
+              running = false;
+              rafId = null;
+              return;
+            }
+            rafId = requestAnimationFrame(animate);
+          };
+
+          ensureLoop();
+
+        } catch (err) {
+          console.error("Gagal memuat render loop GhostCursor: ", err);
+        }
+
+        return () => {
+          active = false;
+          if (rafId) cancelAnimationFrame(rafId);
+          running = false;
+          resizeObs?.disconnect();
+          
+          window.removeEventListener('pointermove', null);
+          
+          if (renderer) {
+            scene.clear();
+            geom.dispose();
+            material.dispose();
+            composer.dispose();
+            renderer.dispose();
+            renderer.forceContextLoss();
+            if (renderer.domElement.parentElement) {
+              renderer.domElement.parentElement.removeChild(renderer.domElement);
+            }
+          }
+        };
+      }, [trailLength, inertia, bloomStrength, bloomRadius, bloomThreshold, targetPixels, fadeDelayMs, fadeDurationMs]);
+
+      const mergedStyle = useMemo(() => ({ zIndex, ...style }), [zIndex, style]);
+      return <div ref={containerRef} className={`ghost-cursor ${className ?? ''}`} style={mergedStyle} />;
+    };
+
+    // --- OTHER COMPONENTS ---
+    const TECH_STACKS = [
+      { name: 'HTML', category: 'Frontend', level: '90%', icon: 'html', color: 'text-orange-500' },
+      { name: 'CSS', category: 'Frontend', level: '85%', icon: 'css', color: 'text-blue-500' },
+      { name: 'JavaScript', category: 'Frontend', level: '80%', icon: 'js', color: 'text-yellow-400' },
+      { name: 'Python', category: 'Backend/Scripting', level: '75%', icon: 'python', color: 'text-blue-400' },
+      { name: 'Linux', category: 'SysAdmin', level: '85%', icon: 'linux', color: 'text-neutral-200' },
+      { name: 'GitHub', category: 'DevOps', level: '80%', icon: 'github', color: 'text-purple-400' },
+      { name: 'Cisco', category: 'Networking', level: '85%', icon: 'cisco', color: 'text-sky-400' },
+      { name: 'Mikrotik', category: 'Networking', level: '80%', icon: 'mikrotik', color: 'text-rose-400' },
+      { name: 'Cloudflare', category: 'Security/Cloud', level: '75%', icon: 'cloudflare', color: 'text-orange-400' },
+    ];
+
+    const PROJECTS = [
+      {
+        id: 'python-http',
+        title: 'Python HTTP Server',
+        description: 'Server HTTP kustom yang dibangun dari nol menggunakan modul socket Python. Mendukung multi-threading, serving file statis, dan API routes sederhana.',
+        tags: ['Python', 'Networking', 'Sockets', 'Multithreading'],
+        type: 'sys',
+        details: 'Server ini menangani request TCP socket secara raw, melakukan parsing HTTP request, mengolah header, dan merespons dengan format payload standar RFC 2616.'
+      },
+      {
+        id: 'cloudflare-tunnel',
+        title: 'Cloudflare Tunnel Setup',
+        description: 'Expose local server (web, SSH, database) ke internet secara aman tanpa port forwarding menggunakan Cloudflare Tunnel (cloudflared).',
+        tags: ['Cloudflare', 'Security', 'Linux', 'Reverse Proxy'],
+        type: 'tunnel',
+        details: 'Arsitektur zero-trust ini menghubungkan port local server ke edge server Cloudflare melalui tunnel enkripsi outbound, melindungi host dari serangan DDoS langsung.'
+      },
+      {
+        id: 'cisco-network',
+        title: 'Cisco Corporate Network Design',
+        description: 'Simulasi infrastruktur jaringan korporat skala menengah menggunakan Cisco Packet Tracer dengan redundansi Router, VLAN, OSPF, dan Access Control List.',
+        tags: ['Cisco', 'Packet Tracer', 'Routing', 'Security'],
+        type: 'cisco',
+        details: 'Menerapkan dynamic routing OSPF untuk fault tolerance, Inter-VLAN routing menggunakan sub-interface, DHCP Server terpusat, dan rule ACL untuk keamanan segmentasi departemen.'
+      },
+      {
+        id: 'ptp-wireless',
+        title: 'Wireless Point To Point Network',
+        description: 'Perancangan jaringan nirkabel Point-to-Point (P2P) jarak jauh menggunakan perangkat outdoor Mikrotik untuk interkoneksi antar gedung terpisah.',
+        tags: ['Mikrotik', 'Wireless', 'P2P', 'Bridge'],
+        type: 'ptp',
+        details: 'Konfigurasi nstreme/nv2 wireless protocol pada frekuensi 5Ghz, kalkulasi link budget, perhitungan Fresnel Zone, dan konfigurasi EoIP tunnel di atas link nirkabel.'
+      }
+    ];
+
+    const EDUCATION = {
+      institution: 'Universitas Duta Bangsa Surakarta',
+      degree: 'D3 Teknik Komputer',
+      cohort: 'Angkatan 2025',
+      status: 'Mahasiswa Aktif',
+      gpa: '3.82 / 4.00 (Skala Berjalan)',
+      courses: [
+        'Administrasi Jaringan & Server',
+        'Sistem Operasi Linux',
+        'Keamanan Jaringan',
+        'Pemrograman Web & Python Dasar',
+        'Cloud Computing & Virtualisasi'
+      ]
+    };
+
+    const CERTIFICATES = [
+      { title: 'Cisco Certified Network Associate (CCNA)', issuer: 'Cisco Networking Academy', date: '2025', desc: 'Validasi kemampuan instalasi, konfigurasi, operasional, dan troubleshooting jaringan berskala medium.' },
+      { title: 'MTCNA - Mikrotik Certified Network Associate', issuer: 'Mikrotik Academy', date: '2025', desc: 'Sertifikasi kompetensi dasar routerOS Mikrotik termasuk routing, firewall, bandwidth management, dan wireless.' },
+      { title: 'Linux System Administration Essentials', issuer: 'Linux Foundation / Partner', date: '2025', desc: 'Sertifikasi pemahaman dasar administrasi sistem Linux, manajemen user, file system, dan shell scripting.' },
+      { title: 'Cloudflare Zero Trust Architecture Practitioner', issuer: 'Cloudflare Academy', date: '2025', desc: 'Pelatihan implementasi zero-trust access, secure web gateway, dan isolasi browser menggunakan platform Cloudflare.' }
+    ];
+
+    const clamp = (v, min = 0, max = 100) => Math.min(Math.max(v, min), max);
+    const round = (v, precision = 3) => parseFloat(v.toFixed(precision));
+    const adjust = (v, fMin, fMax, tMin, tMax) => round(tMin + ((tMax - tMin) * (v - fMin)) / (fMax - fMin));
+
+    const DEFAULT_INNER_GRADIENT = 'linear-gradient(145deg, rgba(74, 14, 23, 0.95) 0%, rgba(220, 174, 108, 0.15) 100%)';
+    const ANIMATION_CONFIG = { INITIAL_DURATION: 1200, INITIAL_X_OFFSET: 70, INITIAL_Y_OFFSET: 60, DEVICE_BETA_OFFSET: 20, ENTER_TRANSITION_MS: 180 };
+
+    const ProfileCardComponent = ({
+      avatarUrl = 'fotoprofile.jpeg', iconUrl = '', grainUrl = '', innerGradient, behindGlowEnabled = true, behindGlowColor = 'rgba(220, 174, 108, 0.25)', behindGlowSize = '45%', className = '', enableTilt = true, enableMobileTilt = false, mobileTiltSensitivity = 5, miniAvatarUrl, name = 'Adam Arraya', title = 'D3 Teknik Komputer', handle = 'adamarraya', status = 'Online', contactText = 'Hubungi Saya', showUserInfo = true, onContactClick
+    }) => {
+      const wrapRef = useRef(null);
+      const shellRef = useRef(null);
+      const enterTimerRef = useRef(null);
+      const leaveRafRef = useRef(null);
+      const [avatarSrc, setAvatarSrc] = useState(avatarUrl);
+      const [miniSrc, setMiniSrc] = useState(miniAvatarUrl || avatarUrl);
+
+      const fallbacks = ['fotoprofile.jpeg', 'fotoprofile.jpeg', 'fotoprofile.jpeg', 'image_493526.jpg'];
+      const handleAvatarError = () => {
+        const currentIndex = fallbacks.indexOf(avatarSrc);
+        if (currentIndex !== -1 && currentIndex < fallbacks.length - 1) setAvatarSrc(fallbacks[currentIndex + 1]);
+        else if (avatarSrc !== 'https://placehold.co/400x600/4a0e17/dcae6c?text=Adam+Arraya') setAvatarSrc('https://placehold.co/400x600/4a0e17/dcae6c?text=Adam+Arraya');
+      };
+      const handleMiniError = () => {
+        const currentIndex = fallbacks.indexOf(miniSrc);
+        if (currentIndex !== -1 && currentIndex < fallbacks.length - 1) setMiniSrc(fallbacks[currentIndex + 1]);
+        else if (miniSrc !== 'https://placehold.co/100x100/4a0e17/dcae6c?text=AA') setMiniSrc('https://placehold.co/100x100/4a0e17/dcae6c?text=AA');
+      };
+
+      const tiltEngine = useMemo(() => {
+        if (!enableTilt) return null;
+        let rafId = null; let running = false; let lastTs = 0;
+        let currentX = 0; let currentY = 0; let targetX = 0; let targetY = 0;
+        const DEFAULT_TAU = 0.14; const INITIAL_TAU = 0.6; let initialUntil = 0;
+
+        const setVarsFromXY = (x, y) => {
+          const shell = shellRef.current; const wrap = wrapRef.current;
+          if (!shell || !wrap) return;
+          const width = shell.clientWidth || 1; const height = shell.clientHeight || 1;
+          const percentX = clamp((100 / width) * x); const percentY = clamp((100 / height) * y);
+          const centerX = percentX - 50; const centerY = percentY - 50;
+
+          const properties = {
+            '--pointer-x': `${percentX}%`, '--pointer-y': `${percentY}%`, '--background-x': `${adjust(percentX, 0, 100, 35, 65)}%`, '--background-y': `${adjust(percentY, 0, 100, 35, 65)}%`,
+            '--pointer-from-center': `${clamp(Math.hypot(percentY - 50, percentX - 50) / 50, 0, 1)}`, '--pointer-from-top': `${percentY / 100}`, '--pointer-from-left': `${percentX / 100}`,
+            '--rotate-x': `${round(-(centerX / 5))}deg`, '--rotate-y': `${round(centerY / 4)}deg`
+          };
+          for (const [k, v] of Object.entries(properties)) wrap.style.setProperty(k, v);
+        };
+
+        const step = ts => {
+          if (!running) return;
+          if (lastTs === 0) lastTs = ts;
+          const dt = (ts - lastTs) / 1000; lastTs = ts;
+          const tau = ts < initialUntil ? INITIAL_TAU : DEFAULT_TAU;
+          const k = 1 - Math.exp(-dt / tau);
+          currentX += (targetX - currentX) * k; currentY += (targetY - currentY) * k;
+          setVarsFromXY(currentX, currentY);
+          const stillFar = Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05;
+          if (stillFar || document.hasFocus()) rafId = requestAnimationFrame(step);
+          else { running = false; lastTs = 0; if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
+        };
+
+        const start = () => { if (running) return; running = true; lastTs = 0; rafId = requestAnimationFrame(step); };
+
+        return {
+          setImmediate(x, y) { currentX = x; currentY = y; setVarsFromXY(currentX, currentY); },
+          setTarget(x, y) { targetX = x; targetY = y; start(); },
+          toCenter() { const shell = shellRef.current; if (!shell) return; this.setTarget(shell.clientWidth / 2, shell.clientHeight / 2); },
+          beginInitial(durationMs) { initialUntil = performance.now() + durationMs; start(); },
+          getCurrent() { return { x: currentX, y: currentY, tx: targetX, ty: targetY }; },
+          cancel() { if (rafId) cancelAnimationFrame(rafId); rafId = null; running = false; lastTs = 0; }
+        };
+      }, [enableTilt]);
+
+      const getOffsets = (evt, el) => { const rect = el.getBoundingClientRect(); return { x: evt.clientX - rect.left, y: evt.clientY - rect.top }; };
+
+      const handlePointerMove = useCallback(event => {
+          const shell = shellRef.current; if (!shell || !tiltEngine) return;
+          const { x, y } = getOffsets(event, shell); tiltEngine.setTarget(x, y);
+      }, [tiltEngine]);
+
+      const handlePointerEnter = useCallback(event => {
+          const shell = shellRef.current; if (!shell || !tiltEngine) return;
+          shell.classList.add('active'); shell.classList.add('entering');
+          if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
+          enterTimerRef.current = window.setTimeout(() => { shell.classList.remove('entering'); }, ANIMATION_CONFIG.ENTER_TRANSITION_MS);
+          const { x, y } = getOffsets(event, shell); tiltEngine.setTarget(x, y);
+      }, [tiltEngine]);
+
+      const handlePointerLeave = useCallback(() => {
+        const shell = shellRef.current; if (!shell || !tiltEngine) return;
+        tiltEngine.toCenter();
+        const checkSettle = () => {
+          const { x, y, tx, ty } = tiltEngine.getCurrent();
+          if (Math.hypot(tx - x, ty - y) < 0.6) { shell.classList.remove('active'); leaveRafRef.current = null; } 
+          else leaveRafRef.current = requestAnimationFrame(checkSettle);
+        };
+        if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);
+        leaveRafRef.current = requestAnimationFrame(checkSettle);
+      }, [tiltEngine]);
+
+      useEffect(() => {
+        if (!enableTilt || !tiltEngine) return;
+        const shell = shellRef.current; if (!shell) return;
+
+        shell.addEventListener('pointerenter', handlePointerEnter);
+        shell.addEventListener('pointermove', handlePointerMove);
+        shell.addEventListener('pointerleave', handlePointerLeave);
+
+        const initialX = (shell.clientWidth || 0) - ANIMATION_CONFIG.INITIAL_X_OFFSET;
+        const initialY = ANIMATION_CONFIG.INITIAL_Y_OFFSET;
+        tiltEngine.setImmediate(initialX, initialY); tiltEngine.toCenter(); tiltEngine.beginInitial(ANIMATION_CONFIG.INITIAL_DURATION);
+
+        return () => {
+          shell.removeEventListener('pointerenter', handlePointerEnter); shell.removeEventListener('pointermove', handlePointerMove); shell.removeEventListener('pointerleave', handlePointerLeave);
+          if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
+          if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);
+          tiltEngine.cancel(); shell.classList.remove('entering');
+        };
+      }, [enableTilt, enableMobileTilt, tiltEngine, handlePointerMove, handlePointerEnter, handlePointerLeave]);
+
+      const cardStyle = useMemo(() => ({ '--icon': iconUrl ? `url(${iconUrl})` : 'none', '--grain': grainUrl ? `url(${grainUrl})` : 'none', '--inner-gradient': innerGradient ?? DEFAULT_INNER_GRADIENT, '--behind-glow-color': behindGlowColor ?? 'rgba(220, 174, 108, 0.25)', '--behind-glow-size': behindGlowSize ?? '45%' }), [iconUrl, grainUrl, innerGradient, behindGlowColor, behindGlowSize]);
+      const handleContactClick = useCallback((e) => { e.stopPropagation(); onContactClick?.(); }, [onContactClick]);
+
+      return (
+        <div ref={wrapRef} className={`pc-card-wrapper ${className}`.trim()} style={cardStyle}>
+          {behindGlowEnabled && <div className="pc-behind" />}
+          <div ref={shellRef} className="pc-card-shell">
+            <section className="pc-card">
+              <div className="pc-inside">
+                <div className="pc-shine" />
+                <div className="pc-glare" />
+                <div className="pc-avatar-content">
+                  <img className="avatar animate-fade-in" src={avatarSrc} alt={`${name || 'User'} avatar`} loading="lazy" onError={handleAvatarError} />
+                  {showUserInfo && (
+                    <div className="pc-user-info">
+                      <div className="pc-user-details">
+                        <div className="pc-mini-avatar"><img src={miniSrc} alt={`${name || 'User'} mini avatar`} loading="lazy" onError={handleMiniError} /></div>
+                        <div className="pc-user-text">
+                          <div className="pc-handle">@{handle}</div>
+                          <div className="pc-status"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>{status}</div>
+                        </div>
+                      </div>
+                      <button className="pc-contact-btn" onClick={handleContactClick} style={{ pointerEvents: 'auto' }} type="button">{contactText}</button>
+                    </div>
+                  )}
+                </div>
+                <div className="pc-content"><div className="pc-details"><h3>{name}</h3><p>{title}</p></div></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      );
+    };
+
+    const ProfileCard = React.memo(ProfileCardComponent);
+
+    function Typewriter({ words }) {
+      const [currentWordIndex, setCurrentWordIndex] = useState(0);
+      const [currentText, setCurrentText] = useState('');
+      const [isDeleting, setIsDeleting] = useState(false);
+      const [typingSpeed, setTypingSpeed] = useState(150);
+
+      useEffect(() => {
+        let timer;
+        const fullWord = words[currentWordIndex];
+        if (isDeleting) {
+          timer = setTimeout(() => { setCurrentText(fullWord.substring(0, currentText.length - 1)); setTypingSpeed(50); }, typingSpeed);
+        } else {
+          timer = setTimeout(() => { setCurrentText(fullWord.substring(0, currentText.length + 1)); setTypingSpeed(120); }, typingSpeed);
+        }
+        if (!isDeleting && currentText === fullWord) timer = setTimeout(() => setIsDeleting(true), 1500);
+        else if (isDeleting && currentText === '') { setIsDeleting(false); setCurrentWordIndex((prev) => (prev + 1) % words.length); setTypingSpeed(150); }
+        return () => clearTimeout(timer);
+      }, [currentText, isDeleting, currentWordIndex, words, typingSpeed]);
+
+      return <span className="inline-block min-h-[1.5em] text-gold-900 font-syne tracking-wide">{currentText}<span className="animate-pulse font-light ml-1">|</span></span>;
+    }
+
+    function TechIcon({ name, className = "w-6 h-6" }) {
+      switch (name.toLowerCase()) {
+        case 'html': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l10 2-2 16-8 2-8-2-2-16zm-4 7h8v1H8zm0 4h6v1H8zm4 3l-4-2.5V15" /></svg>;
+        case 'css': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l10 2-2 16-8 2-8-2-2-16zm4 5H8v4h6v4l-4 2-4-2v-1" /></svg>;
+        case 'javascript': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M15 9h-2v4a2 2 0 0 0 4 0v-4zm-6 3a1 1 0 0 1 1-1h2v4a2 2 0 0 1-4 0v-1" /></svg>;
+        case 'python': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm1 4h-2v4H7v2h4v4h2v-4h4v-2h-4V6z" /></svg>;
+        case 'linux': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><circle cx="12" cy="12" r="3" /></svg>;
+        case 'github': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg>;
+        case 'cisco': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 18v-8M8 20V6M12 22V2M16 20V6M20 18v-8" /></svg>;
+        case 'mikrotik': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18M12 3v18M6 6l12 12M18 6L6 12" /></svg>;
+        case 'cloudflare': return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-3.25-4.5-5.5-3.5-.5-1.5-2.5-4-5.5-3.5-3 0-4.5 2.5-4.5 5A3.5 3.5 0 0 0 9 19h8.5z" /></svg>;
+        default: return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 8v8M8 12h8" /></svg>;
+      }
+    }
+
+    function AnimatedParticles() {
+      const [particles, setParticles] = useState([]);
+      useEffect(() => {
+        const generated = Array.from({ length: 22 }).map((_, i) => ({
+          id: i, x: Math.random() * 100, y: Math.random() * 100, size: Math.random() * 4 + 2, speed: Math.random() * 12 + 8, delay: Math.random() * 5,
+        }));
+        setParticles(generated);
+      }, []);
+
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40 mix-blend-screen">
+          {particles.map((p) => (
+            <div key={p.id} className="absolute rounded-full bg-gold-900 animate-pulse"
+              style={{ left: `${p.x}%`, top: `${p.y}%`, width: `${p.size}px`, height: `${p.size}px`, animationDuration: `${p.speed}s`, animationDelay: `${p.delay}s` }} />
+          ))}
+        </div>
+      );
+    }
+
+    function PythonSimulation() {
+      const [logs, setLogs] = useState(['[INFO] Socket server initialized on port 8080...', '[INFO] Listening for incoming TCP links...']);
+      const [requestsCount, setRequestsCount] = useState(0);
+
+      const triggerRequest = () => {
+        const routes = ['/', '/api/status', '/index.html', '/unauthorized', '/assets/logo.png'];
+        const selectedRoute = routes[Math.floor(Math.random() * routes.length)];
+        const statuses = [200, 200, 404, 401, 304]; const status = statuses[routes.indexOf(selectedRoute)];
+        const timestamp = new Date().toLocaleTimeString();
+        const requestLog = `[REQ] ${timestamp} - 127.0.0.1 - GET ${selectedRoute} HTTP/1.1`;
+        const responseLog = `[RESP] ${timestamp} - Server responds: ${status} ${status === 200 ? 'OK' : status === 404 ? 'NOT FOUND' : 'ACTION COMPLETED'}`;
+        
+        setLogs(prev => [...prev.slice(-4), requestLog, responseLog]); setRequestsCount(c => c + 1);
+      };
+
+      return (
+        <div className="bg-black/80 rounded-lg p-4 font-mono text-xs text-green-400 border border-burgundy-800/60 shadow-inner">
+          <div className="flex justify-between items-center pb-2 mb-2 border-b border-burgundy-900/40 text-neutral-400">
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>HTTP-Server.py</span>
+            <span className="text-[10px] bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded">Active</span>
+          </div>
+          <div className="space-y-1 h-24 overflow-y-auto">{logs.map((log, i) => (<div key={i} className={log.startsWith('[REQ]') ? 'text-yellow-200' : log.startsWith('[RESP]') ? 'text-blue-300' : 'text-emerald-400'}>{log}</div>))}</div>
+          <div className="mt-3 flex justify-between items-center pt-2 border-t border-burgundy-900/40">
+            <span className="text-neutral-400 text-[10px]">Total Hits: {requestsCount}</span>
+            <button onClick={triggerRequest} className="px-2.5 py-1 rounded bg-gold-900 text-burgundy-950 hover:bg-gold-500 transition-all text-[11px] font-bold">Kirim Request</button>
+          </div>
+        </div>
+      );
+    }
+
+    function TunnelSimulation() {
+      const [isOnline, setIsOnline] = useState(true);
+      return (
+        <div className="bg-black/80 rounded-lg p-4 font-mono text-xs text-neutral-300 border border-burgundy-800/60 shadow-inner">
+          <div className="flex justify-between items-center pb-2 mb-2 border-b border-burgundy-900/40">
+            <span className="flex items-center gap-1.5 font-bold text-orange-400"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Cloudflare Tunnel</span>
+            <button onClick={() => setIsOnline(!isOnline)} className={`px-2 py-0.5 rounded text-[10px] font-bold ${isOnline ? 'bg-emerald-900 text-emerald-200' : 'bg-rose-900 text-rose-200'}`}>{isOnline ? 'CONNECTED' : 'OFFLINE'}</button>
+          </div>
+          <div className="flex items-center justify-around py-2 relative">
+            <div className="text-center z-10 bg-burgundy-900/80 p-1.5 rounded border border-gold-900/30"><p className="text-[10px] text-neutral-400">Localhost</p><p className="text-yellow-300 font-bold text-[11px]">Port 3000</p></div>
+            <div className="absolute w-2/3 h-0.5 border-t border-dashed border-gold-900/30 top-1/2 left-1/6"><div className={`h-full bg-gradient-to-r from-orange-400 to-amber-200 transition-all duration-1000 ${isOnline ? 'w-full animate-pulse' : 'w-0'}`} /></div>
+            <div className="text-center z-10 bg-neutral-900 p-1.5 rounded border border-orange-500/30"><p className="text-[10px] text-neutral-400">Edge Gateway</p><p className="text-orange-400 font-bold text-[11px]">adamarraya.dev</p></div>
+          </div>
+          <p className="text-[10px] text-center text-neutral-400 mt-2">{isOnline ? '✔ Tunnel terenkripsi TLS 1.3 aman dari serangan WAN.' : '✖ Koneksi tunnel diputus. Akses ditolak.'}</p>
+        </div>
+      );
+    }
+
+    function CiscoSimulation() {
+      const [activeNode, setActiveNode] = useState('Router');
+      const nodes = {
+        Router: { ip: '192.168.1.1', desc: 'Gateway utama korporasi dengan routing OSPF aktif.', status: 'Online' },
+        Switch: { ip: 'VLAN 10/20/30', desc: 'Switch manageable (L2) memisahkan HRD, IT, dan Finance.', status: 'Online' },
+        Server: { ip: '192.168.10.10', desc: 'Local Database Server dilindungi Access Control List ketat.', status: 'Restricted' }
+      };
+      return (
+        <div className="bg-black/80 rounded-lg p-4 font-mono text-xs text-neutral-300 border border-burgundy-800/60 shadow-inner">
+          <div className="flex justify-between items-center pb-2 mb-2 border-b border-burgundy-900/40">
+            <span className="font-bold text-sky-400">Packet Tracer Blueprint</span><span className="text-[10px] text-neutral-400">Interact to Inspect</span>
+          </div>
+          <div className="flex justify-between items-center gap-1.5 py-1">
+            {Object.keys(nodes).map(nodeName => (
+              <button key={nodeName} onClick={() => setActiveNode(nodeName)} className={`flex-1 py-1.5 rounded text-center transition-all ${activeNode === nodeName ? 'bg-sky-950 border border-sky-400 text-sky-200' : 'bg-neutral-900/60 hover:bg-neutral-800 text-neutral-400'}`}>{nodeName}</button>
+            ))}
+          </div>
+          <div className="mt-3 bg-neutral-950 p-2.5 rounded border border-neutral-800">
+            <div className="flex justify-between text-[11px] font-bold text-neutral-200 border-b border-neutral-800 pb-1 mb-1">
+              <span>Node: {activeNode}</span><span className={nodes[activeNode].status === 'Online' ? 'text-emerald-400' : 'text-amber-400'}>● {nodes[activeNode].status}</span>
+            </div>
+            <p className="text-[10px] text-sky-300">IP: {nodes[activeNode].ip}</p>
+            <p className="text-[10px] text-neutral-400 mt-1 leading-relaxed">{nodes[activeNode].desc}</p>
+          </div>
+        </div>
+      );
+    }
+
+    function PtpSimulation() {
+      const [distance, setDistance] = useState(15);
+      const signalStrength = useMemo(() => {
+        if (distance < 5) return { text: 'Sangat Kuat', val: '95%', color: 'text-emerald-400' };
+        if (distance < 18) return { text: 'Stabil & Kuat', val: '80%', color: 'text-sky-400' };
+        if (distance < 30) return { text: 'Cukup', val: '55%', color: 'text-yellow-400' };
+        return { text: 'Sinyal Lemah (Loss)', val: '18%', color: 'text-rose-500' };
+      }, [distance]);
+
+      return (
+        <div className="bg-black/80 rounded-lg p-4 font-mono text-xs text-neutral-300 border border-burgundy-800/60 shadow-inner">
+          <div className="flex justify-between items-center pb-1 mb-2 border-b border-burgundy-900/40">
+            <span className="font-bold text-rose-400">Mikrotik PtP Link-Budget</span><span className="text-[10px] text-neutral-400">Antena Jarak Jauh</span>
+          </div>
+          <div className="space-y-2 py-1">
+            <div>
+              <div className="flex justify-between text-[11px]"><span className="text-neutral-400">Jarak Antar Menara:</span><span className="font-bold text-gold-900">{distance} KM</span></div>
+              <input type="range" min="1" max="40" value={distance} onChange={(e) => setDistance(parseInt(e.target.value))} className="w-full accent-gold-900 bg-neutral-800 h-1 rounded-lg outline-none cursor-pointer mt-1" />
+            </div>
+            <div className="bg-neutral-950 p-2.5 rounded border border-neutral-800 text-[11px] space-y-1">
+              <div className="flex justify-between"><span>Signal Quality:</span><span className={`font-bold ${signalStrength.color}`}>{signalStrength.text} ({signalStrength.val})</span></div>
+              <div className="flex justify-between"><span>Fresnel Zone:</span><span>{distance > 30 ? 'Terhalang Bumi/Gedung' : '60% Bebas Hambatan (OK)'}</span></div>
+              <div className="flex justify-between"><span>Rekomendasi Alat:</span><span className="text-amber-300">{distance > 20 ? 'Mikrotik LHG XL 5 ac' : 'Mikrotik SXT S5'}</span></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [darkMode, setDarkMode] = useState(true);
+      const [selectedCert, setSelectedCert] = useState(null);
+      const [expandedProject, setExpandedProject] = useState(null);
+      const [showCVModal, setShowCVModal] = useState(false);
+      const [menuOpen, setMenuOpen] = useState(false);
+
+      useEffect(() => {
+        if (darkMode) { document.documentElement.classList.add('dark'); document.documentElement.classList.remove('light'); } 
+        else { document.documentElement.classList.add('light'); document.documentElement.classList.remove('dark'); }
+      }, [darkMode]);
+
+      const handleContactScroll = () => {
+        const contactSection = document.getElementById('contact');
+        if (contactSection) contactSection.scrollIntoView({ behavior: 'smooth' });
+      };
+
+      return (
+        <div className={`min-h-screen ${darkMode ? 'bg-burgundy-950 text-gold-950' : 'bg-amber-50/50 text-burgundy-950'} transition-all duration-500 relative editorial-grid`}>
+          
+          {/* GHOST CURSOR EFFECT (Fixed to Viewport, Unclickable Layer) */}
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none' }}>
+            <GhostCursor color={darkMode ? "#dcae6c" : "#9a2139"} fadeDelayMs={1500} fadeDurationMs={2000} trailLength={40} />
+          </div>
+
+          {/* Navigation Bar */}
+          <nav className="sticky top-0 z-50 backdrop-blur-md bg-burgundy-950/85 dark:bg-burgundy-950/90 border-b border-gold-900/10 transition-all">
+            <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+              <a href="#hero" className="flex items-center gap-2">
+                <span className="font-syne text-xl tracking-widest text-gold-900 font-bold">ADAM.ARRAYA</span>
+                <span className="text-[10px] border border-gold-900 px-1 py-0.5 rounded text-gold-900 font-mono tracking-tighter">ANGK.25</span>
+              </a>
+              
+              <div className="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-widest relative z-10">
+                <a href="#about" className="hover:text-gold-900 transition-colors">About</a>
+                <a href="#tech" className="hover:text-gold-900 transition-colors">Tech Stack</a>
+                <a href="#projects" className="hover:text-gold-900 transition-colors">Projects</a>
+                <a href="#education" className="hover:text-gold-900 transition-colors">Education</a>
+                <a href="#certificates" className="hover:text-gold-900 transition-colors">Certifications</a>
+                <a href="#contact" className="hover:text-gold-900 transition-colors">Contact</a>
+                
+                <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-full border border-gold-900/20 hover:border-gold-900/50 hover:bg-gold-900/5 transition-all text-gold-900" aria-label="Toggle Theme">
+                  {darkMode ? <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                   : <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>}
+                </button>
+              </div>
+
+              <div className="md:hidden flex items-center gap-4 relative z-10">
+                <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-full border border-gold-900/20 text-gold-900">
+                  {darkMode ? <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                   : <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>}
+                </button>
+                <button onClick={() => setMenuOpen(!menuOpen)} className="text-gold-900 p-2" aria-label="Toggle Navigation Menu">
+                  {menuOpen ? <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                   : <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>}
+                </button>
+              </div>
+            </div>
+
+            {menuOpen && (
+              <div className="md:hidden absolute top-full left-0 w-full bg-burgundy-950 border-b border-gold-900/20 py-6 px-8 flex flex-col gap-4 text-sm font-semibold uppercase tracking-widest text-gold-950 shadow-2xl animate-fade-in relative z-10">
+                <a href="#about" onClick={() => setMenuOpen(false)} className="hover:text-gold-900">About</a>
+                <a href="#tech" onClick={() => setMenuOpen(false)} className="hover:text-gold-900">Tech Stack</a>
+                <a href="#projects" onClick={() => setMenuOpen(false)} className="hover:text-gold-900">Projects</a>
+                <a href="#education" onClick={() => setMenuOpen(false)} className="hover:text-gold-900">Education</a>
+                <a href="#certificates" onClick={() => setMenuOpen(false)} className="hover:text-gold-900">Certifications</a>
+                <a href="#contact" onClick={() => setMenuOpen(false)} className="hover:text-gold-900">Contact</a>
+              </div>
+            )}
+          </nav>
+
+          {/* Hero Header */}
+          <header id="hero" className="relative min-h-[90vh] flex items-center overflow-hidden border-b border-gold-900/10 z-10">
+            <AnimatedParticles />
+            <div className="absolute top-1/4 left-1/4 w-[22vw] h-[22vw] rounded-full bg-burgundy-800/20 blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-1/4 right-1/4 w-[30vw] h-[30vw] rounded-full bg-gold-900/10 blur-[120px] pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto px-6 w-full py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-20">
+              <div className="lg:col-span-7 flex flex-col space-y-6">
+                <div className="flex items-center gap-2">
+                  <span className="h-[2px] w-12 bg-gold-900"></span>
+                  <span className="text-xs font-bold tracking-[0.3em] uppercase text-gold-900 font-syne">D3 TEKNIK KOMPUTER PORTOFOLIO</span>
+                </div>
+                
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif leading-none tracking-tight text-white dark:text-gold-950">
+                  Adam <br/><span className="text-gold-900 inline-block mt-2">Arraya</span>
+                </h1>
+
+                <div className="text-lg md:text-2xl h-10">
+                  <Typewriter words={['D3 Teknik Komputer', 'Networking Enthusiast', 'Web Developer', 'Future System Administrator']} />
+                </div>
+
+                <p className="max-w-xl text-sm md:text-base leading-relaxed text-gold-950/70">
+                  Menggabungkan estetika modern dengan keandalan infrastruktur jaringan. Berfokus pada pembangunan sistem yang aman, efisien, dan siap masa depan.
+                </p>
+
+                <div className="flex flex-wrap gap-4 pt-4">
+                  <button onClick={() => setShowCVModal(true)} className="group px-6 py-3 bg-gold-900 text-burgundy-950 hover:bg-gold-500 transition-all font-bold tracking-wider uppercase text-xs rounded shadow-lg shadow-gold-900/10 flex items-center gap-2">
+                    Download CV <svg className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                  </button>
+                  <button onClick={handleContactScroll} className="px-6 py-3 border border-gold-900/40 text-gold-900 hover:bg-gold-900/5 transition-all font-bold tracking-wider uppercase text-xs rounded flex items-center gap-2">
+                    Hubungi Saya <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 flex justify-center items-center">
+                <ProfileCard 
+                  name="Adam Arraya" title="D3 Teknik Komputer" handle="adamarraya" status="Ready for project"
+                  contactText="Hubungi Saya" avatarUrl="fotoprofile.jpeg" miniAvatarUrl="fotoprofile.jpeg"
+                  enableTilt={true} enableMobileTilt={true} behindGlowEnabled={true}
+                  innerGradient="linear-gradient(145deg, rgba(74, 14, 23, 0.95) 0%, rgba(220, 174, 108, 0.12) 100%)"
+                  onContactClick={handleContactScroll}
+                />
+              </div>
+            </div>
+          </header>
+
+          {/* About Section */}
+          <section id="about" className="py-24 border-b border-gold-900/10 bg-burgundy-950/20 relative z-10">
+            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
+              
+              <div className="lg:col-span-5 flex flex-col justify-center space-y-6">
+                <p className="text-gold-900 font-syne text-xs uppercase tracking-widest font-bold">INTRODUCING</p>
+                <h2 className="text-4xl md:text-5xl font-serif text-white dark:text-gold-950">Tentang <br/><span className="italic text-gold-900">Adam Arraya</span></h2>
+                <div className="h-1 w-20 bg-gold-900" />
+                <p className="text-sm text-gold-950/60 font-mono">[ KELAS ANGKATAN 25 - TEKNIK KOMPUTER ]</p>
+              </div>
+
+              <div className="lg:col-span-7 space-y-8">
+                <p className="text-base md:text-lg leading-relaxed text-gold-950/80 font-normal">
+                  Saya adalah mahasiswa aktif program studi <strong className="text-gold-900">D3 Teknik Komputer di Universitas Duta Bangsa Surakarta</strong>. Lahir di tengah perkembangan teknologi yang masif, saya mendedikasikan waktu belajar saya untuk memahami interaksi antara perangkat keras, arsitektur jaringan, dan administrasi sistem modern.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-5 rounded border border-gold-900/10 bg-burgundy-900/10 hover:border-gold-900/30 hover:bg-burgundy-900/30 transition-all">
+                    <div className="flex items-center gap-3 mb-2"><div className="p-2 bg-gold-900/10 rounded text-gold-900"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5-11.5l-3.75 1.364M5.25 11.25l3-1M12.75 6l3-1.091M2.25 16.5h1.5m1.5 0h1.5m1.5 0h1.5M2.25 12h1.5m1.5 0h1.5" /></svg></div><h3 className="font-serif font-bold text-white dark:text-gold-950">Networking</h3></div>
+                    <p className="text-xs text-gold-950/70 leading-relaxed">Konfigurasi routing dinamis, manajemen subnet, mitigasi loop jaringan, dan desain arsitektur interkoneksi handal.</p>
+                  </div>
+                  <div className="p-5 rounded border border-gold-900/10 bg-burgundy-900/10 hover:border-gold-900/30 hover:bg-burgundy-900/30 transition-all">
+                    <div className="flex items-center gap-3 mb-2"><div className="p-2 bg-gold-900/10 rounded text-gold-900"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg></div><h3 className="font-serif font-bold text-white dark:text-gold-950">Linux Administration</h3></div>
+                    <p className="text-xs text-gold-950/70 leading-relaxed">Mengelola distro server Linux (Debian/Ubuntu), otomasi shell scripting, setting web-server, dan manajemen hak akses aman.</p>
+                  </div>
+                  <div className="p-5 rounded border border-gold-900/10 bg-burgundy-900/10 hover:border-gold-900/30 hover:bg-burgundy-900/30 transition-all">
+                    <div className="flex items-center gap-3 mb-2"><div className="p-2 bg-gold-900/10 rounded text-gold-900"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg></div><h3 className="font-serif font-bold text-white dark:text-gold-950">Cloud Computing</h3></div>
+                    <p className="text-xs text-gold-950/70 leading-relaxed">Implementasi tunnel proxy zero-trust, VPS deployment, setup CDN Cloudflare, dan dasar-dasar virtualisasi server.</p>
+                  </div>
+                  <div className="p-5 rounded border border-gold-900/10 bg-burgundy-900/10 hover:border-gold-900/30 hover:bg-burgundy-900/30 transition-all">
+                    <div className="flex items-center gap-3 mb-2"><div className="p-2 bg-gold-900/10 rounded text-gold-900"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25M19.5 3H4.5A1.5 1.5 0 003 4.5v10.5A1.5 1.5 0 004.5 16.5h15a1.5 1.5 0 001.5-1.5V4.5A1.5 1.5 0 0019.5 3z" /></svg></div><h3 className="font-serif font-bold text-white dark:text-gold-950">Web Development</h3></div>
+                    <p className="text-xs text-gold-950/70 leading-relaxed">Membangun web informatif responsif menggunakan HTML, CSS modern, JavaScript (React), dan integrasi API lightweight.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Tech Stack Section */}
+          <section id="tech" className="py-24 border-b border-gold-900/10 relative z-10">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                <span className="text-gold-900 font-syne text-xs uppercase tracking-widest font-bold">KOMPETENSI TEKNIS</span>
+                <h2 className="text-3xl md:text-5xl font-serif text-white dark:text-gold-950">Tech Stack & Keahlian</h2>
+                <p className="text-xs md:text-sm text-gold-950/60 leading-relaxed">Daftar sistem operasi, protokol, bahasa pemrograman, dan tools yang saya gunakan secara intensif untuk menyelesaikan tugas-tugas akademik maupun project praktikal.</p>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {TECH_STACKS.map((stack, i) => (
+                    <div key={i} className="p-5 rounded bg-burgundy-900/15 border border-gold-900/10 hover:border-gold-900/30 hover:-translate-y-1 transition-all flex flex-col justify-between h-32 group">
+                      <div className="flex justify-between items-start">
+                        <span className={`p-2 rounded bg-gold-900/5 ${stack.color} group-hover:scale-110 transition-transform`}><TechIcon name={stack.icon} /></span>
+                        <span className="text-[10px] uppercase tracking-widest text-gold-900/55 font-mono">{stack.category}</span>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-white dark:text-gold-950 text-sm">{stack.name}</h4>
+                        <div className="w-full bg-burgundy-950 h-1 rounded-full mt-2 overflow-hidden"><div className="bg-gold-900 h-full" style={{ width: stack.level }} /></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="lg:col-span-5 space-y-6 flex flex-col justify-center bg-burgundy-900/10 p-8 rounded-lg border border-gold-900/10">
+                  <h3 className="font-serif text-2xl text-white dark:text-gold-950 mb-4 border-b border-gold-900/10 pb-2">Nilai Kompetensi Utama</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-xs mb-1"><span className="font-bold">Computer Networking (CCNA Level)</span><span className="text-gold-900 font-mono">85%</span></div>
+                      <div className="h-2 bg-burgundy-950 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-gold-900 to-amber-400 rounded-full animate-pulse-slow" style={{ width: '85%' }}></div></div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1"><span className="font-bold">Sistem Administrasi Linux</span><span className="text-gold-900 font-mono">80%</span></div>
+                      <div className="h-2 bg-burgundy-950 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-gold-900 to-amber-400 rounded-full" style={{ width: '80%' }}></div></div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1"><span className="font-bold">Web Coding (React & Python API)</span><span className="text-gold-900 font-mono">75%</span></div>
+                      <div className="h-2 bg-burgundy-950 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-gold-900 to-amber-400 rounded-full" style={{ width: '75%' }}></div></div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1"><span className="font-bold">Cyber Security & Tunneling (Zero Trust)</span><span className="text-gold-900 font-mono">70%</span></div>
+                      <div className="h-2 bg-burgundy-950 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-gold-900 to-amber-400 rounded-full" style={{ width: '70%' }}></div></div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gold-950/60 leading-relaxed mt-4 italic">* Estimasi kemampuan di atas didasarkan pada kurikulum akademik D3, sertifikasi CCNA/MTCNA, dan keberhasilan uji coba berbagai demo project di lab.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Projects Section */}
+          <section id="projects" className="py-24 border-b border-gold-900/10 bg-burgundy-950/10 relative z-10">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                <span className="text-gold-900 font-syne text-xs uppercase tracking-widest font-bold font-serif">INTERACTIVE LAB</span>
+                <h2 className="text-3xl md:text-5xl font-serif text-white dark:text-gold-950">Featured Projects</h2>
+                <p className="text-xs md:text-sm text-gold-950/60">Setiap project di bawah dilengkapi dengan **widget simulasi interaktif**. Jalankan dan uji coba fungsionalitas teknisnya langsung dari halaman ini!</p>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                {PROJECTS.map((project) => (
+                  <div key={project.id} className="p-6 md:p-8 rounded-lg bg-burgundy-900/10 border border-gold-900/15 flex flex-col justify-between space-y-6 shadow-xl relative overflow-hidden group hover:border-gold-900/35 transition-all">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-start">
+                        <span className="px-2.5 py-1 bg-burgundy-950 text-gold-900 rounded font-mono text-[10px] border border-gold-900/20 font-bold uppercase">{project.tags[0]} Focus</span>
+                        <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1.5 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-900/40"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>Demo Live Simulator</span>
+                      </div>
+                      <h3 className="text-2xl font-serif text-white dark:text-gold-950">{project.title}</h3>
+                      <p className="text-xs md:text-sm text-gold-950/70 leading-relaxed">{project.description}</p>
+                    </div>
+                    <div className="bg-black/40 rounded p-1">
+                      {project.type === 'sys' && <PythonSimulation />}
+                      {project.type === 'tunnel' && <TunnelSimulation />}
+                      {project.type === 'cisco' && <CiscoSimulation />}
+                      {project.type === 'ptp' && <PtpSimulation />}
+                    </div>
+                    {expandedProject === project.id && (
+                      <div className="pt-4 border-t border-gold-900/10 text-xs text-gold-950/80 leading-relaxed space-y-2 animate-fade-in font-mono"><p className="font-bold text-gold-900">Spesifikasi Detail Jaringan/Sistem:</p><p>{project.details}</p></div>
+                    )}
+                    <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-gold-900/10">
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.tags.map((tag, idx) => (<span key={idx} className="text-[10px] font-mono text-gold-900/70 bg-burgundy-900/20 px-2 py-0.5 rounded">#{tag}</span>))}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)} className="px-3 py-1.5 border border-gold-900/30 text-gold-900 hover:bg-gold-900/5 transition-all text-xs rounded font-bold">{expandedProject === project.id ? 'Tutup Detail' : 'Info Teknis'}</button>
+                        <a href="https://github.com/adamarraya" target="_blank" rel="noreferrer" className="px-3 py-1.5 bg-gold-900 text-burgundy-950 hover:bg-gold-500 transition-all text-xs font-bold rounded flex items-center gap-1.5"><svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg>Github</a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Education Section */}
+          <section id="education" className="py-24 border-b border-gold-900/10 relative z-10">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div className="lg:col-span-5 flex justify-center lg:justify-start">
+                  <div className="relative p-6 border-2 border-gold-900/30 rounded-lg max-w-sm w-full bg-burgundy-950 shadow-2xl overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-3 bg-gold-900/10 text-gold-900 font-mono text-[10px]">REG. NO #25.TK.812</div>
+                    <h4 className="text-gold-900 font-mono text-xs tracking-widest font-bold uppercase mb-4">PENDIDIKAN AKTIF</h4>
+                    <p className="font-serif text-3xl text-white dark:text-gold-950 mb-2 leading-tight">D3 Teknik Komputer</p>
+                    <p className="text-gold-900 font-semibold mb-6">Universitas Duta Bangsa Surakarta</p>
+                    <div className="space-y-3 font-mono text-xs border-t border-gold-900/10 pt-4">
+                      <div className="flex justify-between"><span className="text-neutral-400">Status:</span><span className="text-emerald-400 font-bold">{EDUCATION.status}</span></div>
+                      <div className="flex justify-between"><span className="text-neutral-400">Angkatan:</span><span>{EDUCATION.cohort}</span></div>
+                      <div className="flex justify-between"><span className="text-neutral-400">IPK Berjalan:</span><span className="text-amber-300 font-bold">{EDUCATION.gpa}</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="lg:col-span-7 space-y-6">
+                  <span className="text-gold-900 font-syne text-xs uppercase tracking-widest font-bold">AKADEMIK & STUDI</span>
+                  <h3 className="text-3xl md:text-5xl font-serif text-white dark:text-gold-950">Membangun Fondasi yang Kuat</h3>
+                  <p className="text-xs md:text-sm text-gold-950/70 leading-relaxed">Studi akademik di Duta Bangsa membekali saya tidak hanya dengan teori murni, namun juga jam praktek laboratorium yang intensif. Kurikulum berfokus pada problem solving sistem riil di lapangan.</p>
+                  <div className="space-y-3 pt-2">
+                    <h5 className="font-bold text-sm text-gold-900 font-mono">Mata Kuliah Unggulan yang Telah/Sedang Ditempuh:</h5>
+                    <div className="flex flex-wrap gap-2">
+                      {EDUCATION.courses.map((course, idx) => (<span key={idx} className="px-3.5 py-1.5 rounded-full border border-gold-900/15 bg-burgundy-900/20 text-xs text-gold-950/80 font-mono flex items-center gap-2 hover:border-gold-900/40 transition-colors cursor-default"><span className="w-1.5 h-1.5 rounded-full bg-gold-900"></span>{course}</span>))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Certifications Section */}
+          <section id="certificates" className="py-24 border-b border-gold-900/10 bg-burgundy-950/15 relative z-10">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                <span className="text-gold-900 font-syne text-xs uppercase tracking-widest font-bold">PROFESSIONAL CREDENTIALS</span>
+                <h2 className="text-3xl md:text-5xl font-serif text-white dark:text-gold-950">Sertifikasi & Lisensi</h2>
+                <p className="text-xs md:text-sm text-gold-950/60 leading-relaxed">Bukti otentik kompetensi saya dalam mengelola sistem server dan arsitektur jaringan dari lembaga bersertifikasi industri terkemuka.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {CERTIFICATES.map((cert, idx) => (
+                  <div key={idx} className="p-6 rounded bg-burgundy-950 border border-gold-900/10 hover:border-gold-900/45 transition-all flex flex-col justify-between h-72 shadow-lg group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-gold-900/30 group-hover:border-gold-900 transition-colors pointer-events-none" />
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] text-gold-900 font-mono font-bold tracking-widest">{cert.date}</span>
+                        <svg className="w-5 h-5 text-gold-900/30 group-hover:text-gold-900 transition-colors" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+                      </div>
+                      <h4 className="font-serif font-bold text-lg text-white dark:text-gold-950 leading-tight group-hover:text-gold-900 transition-colors">{cert.title}</h4>
+                      <p className="text-[11px] text-gold-950/50 uppercase tracking-wider font-mono">{cert.issuer}</p>
+                    </div>
+                    <div className="pt-4 border-t border-gold-900/10 flex justify-between items-center">
+                      <p className="text-[10px] text-gold-950/70 leading-relaxed max-w-[80%] line-clamp-2">{cert.desc}</p>
+                      <button onClick={() => setSelectedCert(cert)} className="p-1.5 rounded bg-gold-900/5 hover:bg-gold-900/10 text-gold-900 transition-colors" aria-label="Inspect Certificate"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25V9m8.25 2.25v6.75a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25V11.25m11.25 0c0 .621-.504 1.125-1.125 1.125h-9.75c-.621 0-1.125-.504-1.125-1.125m11.25 0v3.75m-11.25-3.75v3.75" /></svg></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Contact & Download CV Section (Form Removed) */}
+          <section id="contact" className="py-24 border-b border-gold-900/10 relative z-10">
+            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
+              
+              {/* Left Column: Direct Download Area */}
+              <div className="lg:col-span-7 space-y-8 flex flex-col justify-center">
+                <div className="space-y-3">
+                  <span className="text-gold-900 font-syne text-xs uppercase tracking-widest font-bold">MARINATE A LINK</span>
+                  <h2 className="text-4xl md:text-5xl font-serif text-white dark:text-gold-950">Mulai Kerja Sama</h2>
+                  <p className="text-xs md:text-sm text-gold-950/60 leading-relaxed">
+                    Butuh administrator jaringan, setup server Linux, tunnel VPS Cloudflare, atau integrasi web frontend? Unduh CV saya di bawah ini untuk melihat kualifikasi lengkap.
+                  </p>
+                </div>
+
+                {/* --- TOMBOL DOWNLOAD PENGGANTI FORM --- */}
+                <a href="CV MAGANG ADAM ARRAYA SEMESTER 2.pdf" download="CV_Magang_Adam_Arraya.pdf" className="inline-block w-full text-center">
+                  <button type="button" className="w-full py-4 bg-gold-900 text-burgundy-950 font-bold tracking-widest uppercase text-xs rounded hover:bg-gold-500 transition-colors shadow-xl shadow-gold-900/10 flex items-center justify-center gap-3">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                    Download CV Magang (PDF)
+                  </button>
+                </a>
+              </div>
+
+              {/* Right Column: Social Direct Links */}
+              <div className="lg:col-span-5 flex flex-col justify-center space-y-8">
+                <div className="p-6 rounded bg-burgundy-900/20 border border-gold-900/10 space-y-6">
+                  <h4 className="font-serif text-xl text-white dark:text-gold-950 border-b border-gold-900/10 pb-2">Kontak & Media Sosial</h4>
+                  <div className="space-y-4 font-mono text-xs">
+                    <a href="mailto:adamarraya2202@gmail.com" className="flex items-center gap-3 hover:text-gold-900 transition-colors">
+                      <span className="p-2 bg-gold-900/10 rounded text-gold-900"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>
+                      <span>adamarraya2202@gmail.com</span>
+                    </a>
+                    <a href="https://wa.me/6289509790129" target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-gold-900 transition-colors">
+                      <span className="p-2 bg-gold-900/10 rounded text-gold-900"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+                      <span>WhatsApp (+62 895-0979-0129)</span>
+                    </a>
+                    <a href="https://github.com/adamarraya2202-cmd" target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-gold-900 transition-colors">
+                      <span className="p-2 bg-gold-900/10 rounded text-gold-900"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg></span>
+                      <span>GitHub: adamarraya2202</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="py-8 bg-burgundy-950 text-center text-xs text-gold-950/45 border-t border-gold-900/5 relative z-10">
+            <div className="max-w-7xl mx-auto px-6 space-y-2">
+              <p className="font-serif tracking-widest text-gold-900/60 font-bold uppercase">ADAM ARRAYA</p>
+              <p>© 2026 Adam Arraya. All Rights Reserved. Designed with Burgundy Fashion & Tech Aesthetics.</p>
+              <p className="text-[10px] text-neutral-600 font-mono mt-1">D3 Teknik Komputer - Universitas Duta Bangsa Surakarta - Angkatan 25</p>
+            </div>
+          </footer>
+
+          {/* Certificate Modal */}
+          {selectedCert && (
+            <div className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+              <div className="bg-burgundy-950 border-2 border-gold-900 rounded-lg max-w-lg w-full p-8 space-y-6 relative shadow-2xl">
+                <button onClick={() => setSelectedCert(null)} className="absolute top-4 right-4 text-gold-900 hover:text-white p-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+                <div className="text-center space-y-2">
+                  <span className="text-xs uppercase tracking-widest font-mono text-gold-900">VERIFIED CREDENTIAL REPORT</span>
+                  <h3 className="text-2xl font-serif text-white">{selectedCert.title}</h3>
+                  <p className="text-gold-900 text-xs font-mono">{selectedCert.issuer}</p>
+                </div>
+                <div className="p-6 border border-gold-900/20 rounded bg-burgundy-900/10 text-center font-mono space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-gold-900/10 text-gold-900 flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
+                  <p className="text-xs text-neutral-300 leading-relaxed">"Mahasiswa atas nama **Adam Arraya** telah terverifikasi menyelesaikan seluruh rangkaian ujian kompetensi untuk kualifikasi di atas dengan predikat luar biasa."</p>
+                  <div className="text-[10px] text-neutral-500 border-t border-gold-900/10 pt-4 flex justify-between">
+                    <span>Issued Year: {selectedCert.date}</span><span>Status: ACTIVE & GENUINE</span>
+                  </div>
+                </div>
+                <div className="flex gap-2 justify-end">
+                  <button onClick={() => setSelectedCert(null)} className="px-5 py-2.5 bg-gold-900 text-burgundy-950 hover:bg-gold-500 font-bold text-xs uppercase rounded transition-colors">Tutup Preview</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CV Modal */}
+          {showCVModal && (
+            <div className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+              <div className="bg-burgundy-950 border-2 border-gold-900 rounded-lg max-w-md w-full p-8 space-y-6 relative shadow-2xl">
+                <button onClick={() => setShowCVModal(false)} className="absolute top-4 right-4 text-gold-900 hover:text-white p-2">
+                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+                <div className="text-center space-y-2">
+                  <span className="text-xs uppercase tracking-widest font-mono text-gold-900">CURRICULUM VITAE</span>
+                  <h3 className="text-2xl font-serif text-white">Adam Arraya</h3>
+                  <p className="text-neutral-400 text-xs">Pilih format unduhan portofolio</p>
+                </div>
+                <div className="space-y-3 font-mono text-xs">
+                  <button onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = 'CV MAGANG ADAM ARRAYA SEMESTER 2.pdf';
+                      link.download = 'CV MAGANG ADAM ARRAYA SEMESTER 2.pdf';
+                      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                      setShowCVModal(false);
+                    }} className="w-full p-4 border border-gold-900/20 rounded hover:border-gold-900 hover:bg-gold-900/5 transition-all text-left flex justify-between items-center group">
+                    <div>
+                      <p className="font-bold text-white group-hover:text-gold-900 transition-colors">Curriculum Vitae (PDF)</p>
+                      <p className="text-[10px] text-neutral-400 mt-0.5">Sesuai standar seleksi magang & kerja</p>
+                    </div>
+                    <span className="text-gold-900 font-bold">PDF →</span>
+                  </button>
+                </div>
+                <p className="text-[10px] text-center text-neutral-500 italic">* Berkas di atas dioptimalkan dengan SEO ramah pelacak CV korporasi (ATS-Friendly).</p>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);
+  </script>
+</body>
+</html>
